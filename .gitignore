@@ -1,5 +1,5 @@
-*.tar
-*.tar.*
+*.src.tar
+*.src.tar.xz
 *.log
 *.log.*
 *.sig

@@ -48,7 +48,7 @@ md5sums=('SKIP'
          'f45cf2d0be53e11d715ec8d66ef754f8')
 
 pkgver() {
-  cd "jasper-client"
+  cd "${srcdir}/jasper-client"
   # Use the tag of the last commit
   git describe --long | sed -E 's/([^-]*-g)/r\1/;s/-/./g'
 }

@@ -1,0 +1,92 @@
+# Maintainer: Jan Holthuis <holthuis.jan@googlemail.com>
+
+pkgname=jasper-client-git
+pkgver=0.0.0
+pkgrel=1
+pkgdesc="Jasper is an open source platform for developing always-on, voice-controlled applications."
+arch=('i686' 'x86_64')
+url="https://jasperproject.github.io"
+license=('MIT')
+depends=('pocketsphinx'
+         'cmuclmtk'
+         'openfst'
+         'mitlm'
+         'm2m-aligner'
+         'phonetisaurus'
+         'phonetisaurus-g014b2b'
+         'python2-apscheduler'
+         'python2-cherrypy'
+         'python2-yaml'
+         'python2-argparse'
+         'python2-beautifulsoup4'
+         'python2-facebook-sdk'
+         'python2-feedparser'
+         'python2-mock'
+         'python2-numpy'
+         'python2-dateutil'
+         'python2-mpd'
+         'python2-pytz'
+         'python2-quantities'
+         'python2-semantic'
+         'python2-six'
+         'python2-requests'
+         'python2-pyaudio'
+         'python2-cmuclmtk')
+makedepends=('git'
+             'python2-setuptools')
+optdepends=('python2-espeak: eSpeak TTS support'
+            'python2-gtts: Google TTS support'
+            'python2-pymad: Google TTS support'
+            'svox-pico-git: Pico TTS support'
+            'python2-pykka'
+            'python2-ws4py')
+conflicts=('jasper-client')
+provides=('jasper-client')
+source=('git+https://github.com/Holzhaus/jasper-client.git'
+        'jasper.service')
+md5sums=('SKIP'
+         'f45cf2d0be53e11d715ec8d66ef754f8')
+
+pkgver() {
+  cd "jasper-client"
+  # Use the tag of the last commit
+  git describe --long | sed -E 's/([^-]*-g)/r\1/;s/-/./g'
+}
+
+prepare() {
+  cd "${srcdir}"
+
+  # create wrappers
+  printf '#!/usr/bin/env python2\n/usr/share/jasper-client/jasper-client.py $@\n' > "jasper-client.sh"
+  printf '#!/usr/bin/env python2\n/usr/share/jasper-client/client/populate.py $@\n' > "jasper-populate.sh"
+
+  cd "jasper-client"
+  # Fix Python 2.x interpreter naming
+  find ./ -type f  -name '*.sh' -exec sed -i -e 's/^python /python2 /g' {} \;
+  find ./ -type f  -name '*.py' -exec sed -i -e 's/^\#!\/usr\/bin\/env python$/\#!\/usr\/bin\/env python2/g' {} \;
+
+}
+
+build() {
+  python2 -O -m compileall "${srcdir}/jasper-client"
+}
+
+package() {
+  # install shell wrappers
+  install -m 755 -d "${pkgdir}/usr/bin/" || return 1
+  install -D -m 755 "${srcdir}/jasper-client.sh" "${pkgdir}/usr/bin/jasper-client"
+  install -D -m 755 "${srcdir}/jasper-populate.sh" "${pkgdir}/usr/bin/jasper-populate"
+
+  # install jasper
+  install -m755 -d "${pkgdir}/usr/share/" || return 1
+  cp -dr --no-preserve=owner "${srcdir}/jasper-client" "${pkgdir}/usr/share/" || return 1
+
+  # install readme
+  install -m 755 -d "${pkgdir}/usr/share/doc/jasper-client" || return 1
+  install -D -m 644 "${srcdir}/jasper-client/README.md" "${srcdir}/jasper-client/CONTRIBUTING.md" "${pkgdir}/usr/share/doc/jasper-client/"
+
+  # install service file
+  install -m 755 -d "${pkgdir}/usr/lib/systemd/system" || return 1
+  install -D -m 644 "${srcdir}/jasper.service" "${pkgdir}/usr/lib/systemd/system/jasper.service"
+  
+}

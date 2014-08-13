@@ -1,0 +1,10 @@
+[Unit]
+Description=Jasper Voice Recognition Daemon
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/jasper-client
+Restart=Always
+
+[Install]
+WantedBy=multi-user.target

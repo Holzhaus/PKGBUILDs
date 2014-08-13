@@ -1,0 +1,54 @@
+# Maintainer: Jan Holthuis <holthuis.jan@googlemail.com>
+
+pkgname=marytts
+pkgver=5.1
+pkgrel=1
+pkgdesc="The MARY Text-to-Speech System."
+arch=('any')
+url="http://lnv-90208.sb.dfki.de/"
+license=('custom')
+depends=('java-runtime')
+provides=('marytts')
+source=("https://bitbucket.org/marytts/marytts/downloads/marytts-${pkgver}.zip"
+        "marytts.service")
+md5sums=('3cd8f291b25742524b05c3f6cc3a14dd'
+         'd3edef812607e3024f0c222871ea51c4')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}/bin"
+  # replace path in bash scripts
+  for filename in 'marytts-client.sh' 'marytts-server.sh' 'marytts-component-installer.sh'
+  do
+    sed -i '/BINDIR=/d' "$filename"
+    sed -i 's/`(cd "\$BINDIR"\/\.\. ; pwd)`/\/usr\/share\/marytts\//' "$filename"
+    chmod +x "$filename"
+  done
+}
+
+package() {
+
+  install -m755 -d "${pkgdir}/usr/lib/systemd/system" || return 1
+  install -m755 -d "${pkgdir}/usr/share/doc/" || return 1
+  install -m755 -d "${pkgdir}/usr/share/${pkgname}" || return 1
+  install -m755 -d "${pkgdir}/usr/bin/" || return 1
+
+  cd "${srcdir}" || return 1
+  
+  # install systemd service file
+  install -m644  "marytts.service" "${pkgdir}/usr/lib/systemd/system" || return 1
+
+  cd "${pkgname}-${pkgver}"  || return 1
+
+  # install base files
+  cp -dr --no-preserve=ownership "lib" "download" "installed" "user-dictionaries" "${pkgdir}/usr/share/${pkgname}/" || return 1
+
+  # install start scripts
+  install -m 644 "bin/marytts-server.sh" "${pkgdir}/usr/bin/marytts-server" || return 1
+  install -m 644 "bin/marytts-client.sh" "${pkgdir}/usr/bin/marytts-client" || return 1
+  install -m 644 "bin/marytts-component-installer.sh" "${pkgdir}/usr/bin/marytts-component-installer" || return 1
+
+  # install docs/licenses
+  cp -dr --no-preserve=ownership "doc" "$pkgdir/usr/share/doc/${pkgname}" || return 1
+  install -m 644 "gpl-3.0.txt" "lgpl-3.0.txt" "LICENSE.txt" "${pkgdir}/usr/share/doc/${pkgname}/" || return 1
+
+} 

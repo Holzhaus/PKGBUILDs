@@ -1,0 +1,21 @@
+# Maintainer: Jan Holthuis <holthuis.jan@googlemail.com>
+
+pkgname=python-speechrecognition
+_pypiname=SpeechRecognition
+pkgver=1.0.4
+pkgrel=1
+pkgdesc="Library for performing speech recognition with the Google Speech Recognition API."
+arch=('any')
+url="https://github.com/Uberi/speech_recognition"
+license=('BSD')
+depends=('python')
+conflics=('python-speechrecognition-git')
+makedepends=('python-setuptools')
+provides=('python-speechrecognition')
+source=("https://pypi.python.org/packages/source/S/${_pypiname}/${_pypiname}-${pkgver}.tar.gz")
+md5sums=('5294623669ee136299dfdfb7d3a3abc7')
+
+package() {
+  cd "$srcdir/$_pypiname-$pkgver"
+  python2 setup.py install --root="$pkgdir/" --optimize=1
+}

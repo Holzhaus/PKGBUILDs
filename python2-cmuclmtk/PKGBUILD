@@ -2,7 +2,7 @@
 
 pkgname=python2-cmuclmtk
 _pypiname=cmuclmtk
-pkgver=0.1.2
+pkgver=0.1.4
 pkgrel=1
 pkgdesc="Wrapper library for accessing the language model tools for CMU Sphinx (CMUCLMTK)."
 arch=('any')
@@ -13,7 +13,7 @@ conflics=('python2-cmuclmtk-git')
 makedepends=('python2-setuptools')
 provides=('python2-cmuclmtk')
 source=("https://pypi.python.org/packages/source/c/${_pypiname}/${_pypiname}-${pkgver}.tar.gz")
-md5sums=('4d3a3bb622d4938dd8b4881312c0eff3')
+md5sums=('9295dd79cc993f2f7b2da966bcad1f1f')
 
 package() {
   cd "$srcdir/$_pypiname-$pkgver"

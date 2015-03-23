@@ -1,5 +1,5 @@
 [Unit]
-Description=NZBGet
+Description=NZBGet Daemon
 Documentation=http://nzbget.net/Documentation
 After=network.target
 

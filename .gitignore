@@ -1,7 +1,0 @@
-*.src.tar
-*.src.tar.xz
-*.log
-*.log.*
-*.sig
-pkg/
-src/

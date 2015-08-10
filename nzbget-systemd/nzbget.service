@@ -6,7 +6,8 @@ After=network.target
 [Service]
 User=nzbget
 Group=nzbget
-ExecStart=/usr/bin/nzbget -c /etc/nzbget.conf -D
+Type=forking
+ExecStart=/usr/bin/nzbget -D
 ExecStop=/usr/bin/nzbget -Q
 ExecReload=/usr/bin/nzbget -O
 KillMode=process

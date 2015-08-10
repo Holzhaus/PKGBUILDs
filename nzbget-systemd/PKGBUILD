@@ -3,7 +3,7 @@
 pkgname=nzbget-systemd
 pkgver=0.1
 pkgrel=2
-pkgdesc="Systemd service and config for NZBGet"
+pkgdesc="Systemd service for NZBGet"
 url="https://github.com/Holzhaus/PKGBUILDs"
 arch=('any')
 depends=('nzbget')
